@@ -7,4 +7,39 @@ UMySaveGame::UMySaveGame() {
 	name = TEXT("SampleName");
 	height = 1.80f;
 	weight = 79.5f;
+
+	Http = &FHttpModule::Get();
+	MyHttpCall();
+}
+
+/*Http call*/
+void UMySaveGame::MyHttpCall()
+{
+	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
+	Request->OnProcessRequestComplete().BindUObject(this, &UMySaveGame::OnResponseReceived);
+	//This is the url on which to process the request
+	Request->SetURL("http://jsonplaceholder.typicode.com/posts/1");
+	Request->SetVerb("GET");
+	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+	Request->SetHeader("Content-Type", TEXT("application/json"));
+	Request->ProcessRequest();
+}
+
+void UMySaveGame::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+	//Create a pointer to hold the json serialized data
+	TSharedPtr<FJsonObject> JsonObject;
+
+	//Create a reader pointer to read the json data
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+
+	//Deserialize the json data given Reader and the actual object to deserialize
+	if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		//Get the value of the json object by field name
+		int32 recievedInt = JsonObject->GetIntegerField("userId");
+
+		//Output it to the engine
+		GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, FString::FromInt(recievedInt));
+	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Runtime/Online/HTTP/Public/Http.h"
 #include "MySaveGame.generated.h"
 
 /**
@@ -26,6 +27,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)
 	int32 other;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)
+	FString scores	;
+
 	UMySaveGame();
-	
+
+private:
+	FHttpModule * Http;
+
+	void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
+	void MyHttpCall();
+
 };
