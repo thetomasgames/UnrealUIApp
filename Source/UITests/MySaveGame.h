@@ -16,28 +16,32 @@ class UITESTS_API UMySaveGame : public USaveGame
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString name;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float height;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float weight;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 other;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)
-	FString scores	;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString scores;
 
 	UMySaveGame();
+	
+	UFUNCTION(BlueprintCallable)
+	void SyncGame();
 
 private:
+
 	FHttpModule * Http;
+	FHttpModule * GetHttp();
 
 	void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 	void MyHttpCall();
-
 };
