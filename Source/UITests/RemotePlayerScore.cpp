@@ -9,6 +9,14 @@ URemotePlayerScore::URemotePlayerScore()
 
 }
 
+URemotePlayerScore::URemotePlayerScore(FString name_val, int32 score_val)
+{
+	name = name_val;
+	score = score_val;
+
+}
+
+
 URemotePlayerScore::~URemotePlayerScore()
 {
 }

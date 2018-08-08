@@ -7,7 +7,9 @@ UMySaveGame::UMySaveGame() {
 	name = TEXT("SampleName");
 	height = 1.80f;
 	weight = 79.5f;
-	scores = TEXT("");
+	//URemotePlayerScore p1 = URemotePlayerScore(TEXT("One"), 150);
+	//URemotePlayerScore p2 = URemotePlayerScore(TEXT("Other"), 50);
+	//scores = { &p1, &p2 };
 }
 
 void UMySaveGame::SyncGame()
@@ -55,7 +57,7 @@ void UMySaveGame::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr R
 		UE_LOG(LogTemp, Warning,TEXT("%S"), *content);
 		//int32 recievedInt = JsonObject->GetIntegerField("userId");
 
-		scores = TEXT("changed");
+		//scores = TEXT("changed");
 		//Output it to the engine
 		//GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, FString::FromInt(recievedInt));
 	}

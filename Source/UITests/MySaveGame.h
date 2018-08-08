@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "RemotePlayerScore.h"
 #include "Runtime/Online/HTTP/Public/Http.h"
 #include "MySaveGame.generated.h"
 
@@ -29,7 +30,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString scores;
+	TArray<URemotePlayerScore*> scores;
 
 	UMySaveGame();
 	

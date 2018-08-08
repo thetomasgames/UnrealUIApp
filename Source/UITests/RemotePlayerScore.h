@@ -14,9 +14,12 @@ class UITESTS_API URemotePlayerScore : public UObject
 {
 public:
 	GENERATED_BODY()
-
+		
 	URemotePlayerScore();
 	~URemotePlayerScore();
+
+
+	URemotePlayerScore(FString, int32);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString name;
