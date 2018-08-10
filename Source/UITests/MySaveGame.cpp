@@ -33,7 +33,8 @@ void UMySaveGame::MyHttpCall()
 	TSharedRef<IHttpRequest> Request = GetHttp()->CreateRequest();
 	Request->OnProcessRequestComplete().BindUObject(this, &UMySaveGame::OnResponseReceived);
 	//This is the url on which to process the request
-	Request->SetURL("http://jsonplaceholder.typicode.com/posts/1");
+	int32 value = 10;//rand() % 100;
+	Request->SetURL("http://jsonplaceholder.typicode.com/posts/"+ value);
 	Request->SetVerb("GET");
 	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
 	Request->SetHeader("Content-Type", TEXT("application/json"));
@@ -42,6 +43,7 @@ void UMySaveGame::MyHttpCall()
 
 void UMySaveGame::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
+
 	UE_LOG(LogTemp, Warning, TEXT("OnResponseReceived"));
 	//Create a pointer to hold the json serialized data
 	TSharedPtr<FJsonObject> JsonObject;
@@ -53,9 +55,16 @@ void UMySaveGame::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr R
 	//Deserialize the json data given Reader and the actual object to deserialize
 	if (FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
+		
 		//Get the value of the json object by field name
-		UE_LOG(LogTemp, Warning,TEXT("%S"), *content);
-		//int32 recievedInt = JsonObject->GetIntegerField("userId");
+		//UE_LOG(LogTemp, Warning,TEXT("%S"), *content);
+
+		//int32 score = JsonObject->GetIntegerField("id");
+		//FString name = JsonObject->GetStringField("title");
+		//FFPlayerScore p1;
+		//p1.score = score;
+		//p1.name = name;
+		//scores.Add(p1);
 
 		//scores = TEXT("changed");
 		//Output it to the engine

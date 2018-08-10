@@ -4,13 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
-#include "RemotePlayerScore.h"
+#include "Math/UnrealMathUtility.h"
 #include "Runtime/Online/HTTP/Public/Http.h"
 #include "MySaveGame.generated.h"
 
 /**
  * 
  */
+USTRUCT(BlueprintType)
+struct FFPlayerScore {
+	
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString name = TEXT("Sample");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 score = 100;
+};
+
 UCLASS()
 class UITESTS_API UMySaveGame : public USaveGame
 {
@@ -30,7 +42,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<URemotePlayerScore*> scores;
+	TArray<FFPlayerScore> scores;
 
 	UMySaveGame();
 	
