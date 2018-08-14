@@ -7,9 +7,6 @@ UMySaveGame::UMySaveGame() {
 	name = TEXT("SampleName");
 	height = 1.80f;
 	weight = 79.5f;
-	//URemotePlayerScore p1 = URemotePlayerScore(TEXT("One"), 150);
-	//URemotePlayerScore p2 = URemotePlayerScore(TEXT("Other"), 50);
-	//scores = { &p1, &p2 };
 }
 
 void UMySaveGame::SyncGame()
@@ -33,8 +30,9 @@ void UMySaveGame::MyHttpCall()
 	TSharedRef<IHttpRequest> Request = GetHttp()->CreateRequest();
 	Request->OnProcessRequestComplete().BindUObject(this, &UMySaveGame::OnResponseReceived);
 	//This is the url on which to process the request
-	int32 value = 10;//rand() % 100;
-	Request->SetURL("http://jsonplaceholder.typicode.com/posts/"+ value);
+	//FString url = "http://jsonplaceholder.typicode.com/comments?postId=" + FString::FromInt(rand() % 100);
+	FString url = "https://reqres.in/api/users?page=2";
+	Request->SetURL(url);
 	Request->SetVerb("GET");
 	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
 	Request->SetHeader("Content-Type", TEXT("application/json"));
@@ -44,7 +42,7 @@ void UMySaveGame::MyHttpCall()
 void UMySaveGame::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("OnResponseReceived"));
+	UE_LOG(LogTemp, Warning, TEXT("Received Response"));
 	//Create a pointer to hold the json serialized data
 	TSharedPtr<FJsonObject> JsonObject;
 
@@ -57,17 +55,20 @@ void UMySaveGame::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr R
 	{
 		
 		//Get the value of the json object by field name
-		//UE_LOG(LogTemp, Warning,TEXT("%S"), *content);
 
-		//int32 score = JsonObject->GetIntegerField("id");
-		//FString name = JsonObject->GetStringField("title");
-		//FFPlayerScore p1;
-		//p1.score = score;
-		//p1.name = name;
-		//scores.Add(p1);
+		TArray<TSharedPtr<FJsonObject>> JsonArray = JsonObject->GetArrayField("data");
 
-		//scores = TEXT("changed");
-		//Output it to the engine
+		for (auto Obj : JsonArray) {
+			int32 score = Obj->GetIntegerField("id");
+			FString name = Obj->GetStringField("first_name");
+			FFPlayerScore p1;
+			p1.score = score;
+			p1.name = name;
+			scores.Add(p1);
+			UE_LOG(LogTemp, Warning,TEXT("Olá"));
+		}
+
+		OnScoresUpdate.Broadcast();
 		//GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, FString::FromInt(recievedInt));
 	}
 }

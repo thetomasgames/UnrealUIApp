@@ -23,6 +23,8 @@ struct FFPlayerScore {
 	int32 score = 100;
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUpdateScoresEvent);
+
 UCLASS()
 class UITESTS_API UMySaveGame : public USaveGame
 {
@@ -48,6 +50,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SyncGame();
+
+	UPROPERTY(BlueprintAssignable)
+	FUpdateScoresEvent OnScoresUpdate;
 
 private:
 
