@@ -9,12 +9,6 @@ UMySaveGame::UMySaveGame() {
 	weight = 79.5f;
 }
 
-void UMySaveGame::SyncGame()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Sync game"));
-	MyHttpCall();
-}
-
 FHttpModule * UMySaveGame::GetHttp()
 {
 	if (Http == nullptr) {
@@ -24,8 +18,7 @@ FHttpModule * UMySaveGame::GetHttp()
 }
 
 
-/*Http call*/
-void UMySaveGame::MyHttpCall()
+void UMySaveGame::SyncGame()
 {
 	TSharedRef<IHttpRequest> Request = GetHttp()->CreateRequest();
 	Request->OnProcessRequestComplete().BindUObject(this, &UMySaveGame::OnResponseReceived);
@@ -44,28 +37,29 @@ void UMySaveGame::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr R
 
 	UE_LOG(LogTemp, Warning, TEXT("Received Response"));
 	//Create a pointer to hold the json serialized data
-	TSharedPtr<FJsonObject> JsonObject;
+	TSharedPtr<FJsonObject> JsonResponse;
 
 	//Create a reader pointer to read the json data
 	FString content = Response->GetContentAsString();
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(content);
 
 	//Deserialize the json data given Reader and the actual object to deserialize
-	if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	if (FJsonSerializer::Deserialize(Reader, JsonResponse))
 	{
 		
 		//Get the value of the json object by field name
 
-		TArray<TSharedPtr<FJsonObject>> JsonArray = JsonObject->GetArrayField("data");
+		TArray<TSharedPtr<FJsonValue>> JsonArray = JsonResponse->GetArrayField("data");
 
-		for (auto Obj : JsonArray) {
-			int32 score = Obj->GetIntegerField("id");
-			FString name = Obj->GetStringField("first_name");
+		for (auto JValue : JsonArray) {
+			TSharedPtr<FJsonObject> JObj = JValue->AsObject();
+			int32 score = JObj->GetIntegerField("id");
+			FString name = JObj->GetStringField("first_name");
 			FFPlayerScore p1;
 			p1.score = score;
 			p1.name = name;
 			scores.Add(p1);
-			UE_LOG(LogTemp, Warning,TEXT("Olá"));
+			//UE_LOG(LogTemp, Warning,TEXT("Olá"));
 		}
 
 		OnScoresUpdate.Broadcast();
